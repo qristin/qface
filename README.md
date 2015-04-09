@@ -3,6 +3,7 @@ Detecting face of qers
 
 Required:
 * python 2.7
+* scipy
 * numpy
 * opencv
 
@@ -13,4 +14,9 @@ Run the app with `python face_detection.py`
 
 # facerec
 
+Download:
+https://github.com/bytefish/facerec
 A third party lib. facerec/py/apps/videofacerec opens a stream and detects faces that are trained in the *.pkl file.
+
+Training a model:
+`python simple_videofacerec.py -t /home/philipp/facerec/data/celebrities my_model.pkl`

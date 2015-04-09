@@ -7,6 +7,7 @@ PATH = "/home/kristin/AwesomeThings/QFace/img/captured"
 
 face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 eye_cascade = cv2.CascadeClassifier('haarcascade_eye.xml')
+glass_cascade = cv2.CascadeClassifier('haarcascade_eye_tree_eyeglasses.xml')
 
 video_capture = cv2.VideoCapture(0)
 
@@ -54,7 +55,8 @@ while True:
             cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
             roi_gray = gray[y:y+h, x:x+w]
             roi_color = frame[y:y+h, x:x+w]
-            eyes = eye_cascade.detectMultiScale(roi_gray)
+            eyes = glass_cascade.detectMultiScale(roi_gray)
+
             numberEyes = len(eyes)
             ey1 = 0
             eyeHeighDiff = 1000
@@ -65,6 +67,11 @@ while True:
                     else:
                         eyeHeighDiff = abs(ey1-ey)
                     cv2.rectangle(roi_color,(ex,ey),(ex+ew,ey+eh),(0,0,255),2)
+
+            # glasses = glass_cascade.detectMultiScale(roi_gray)
+            # for (ex,ey,ew,eh) in eyes:
+            #     cv2.rectangle(roi_color,(ex,ey),(ex+ew,ey+eh),(255,0,255),2)
+
             if eyeHeighDiff<10:
                 now = time()
                 if (now-storedTime) > coolDown:
@@ -72,7 +79,8 @@ while True:
                     equIm = cv2.equalizeHist(roi_gray)
                     cv2.imshow('img',equIm)
                     face = cv2.resize(face, face_sz, interpolation = cv2.INTER_CUBIC)
-                    cv2.imwrite(os.path.join(PATH, "%s%s%d%s" % ("","",count,".jpg")), face)
+                    equ = cv2.resize(equIm, face_sz, interpolation = cv2.INTER_CUBIC)
+                    cv2.imwrite(os.path.join(PATH, "%s%s%d%s" % ("","",count,".jpg")), equ)
                     count = count+1
                     print 'Save Image'
         
