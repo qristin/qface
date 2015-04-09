@@ -9,6 +9,8 @@ face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 eye_cascade = cv2.CascadeClassifier('haarcascade_eye.xml')
 glass_cascade = cv2.CascadeClassifier('haarcascade_eye_tree_eyeglasses.xml')
 
+clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+
 video_capture = cv2.VideoCapture(0)
 
 coolDown = 10
@@ -77,10 +79,12 @@ while True:
                 if (now-storedTime) > coolDown:
                     storedTime = now
                     equIm = cv2.equalizeHist(roi_gray)
+                    claheIm = clahe.apply(roi_gray)
                     cv2.imshow('img',equIm)
                     face = cv2.resize(face, face_sz, interpolation = cv2.INTER_CUBIC)
                     equ = cv2.resize(equIm, face_sz, interpolation = cv2.INTER_CUBIC)
-                    cv2.imwrite(os.path.join(PATH, "%s%s%d%s" % ("","",count,".jpg")), equ)
+                    cla = cv2.resize(claheIm, face_sz, interpolation = cv2.INTER_CUBIC)
+                    cv2.imwrite(os.path.join(PATH, "%s%s%d%s" % ("","",count,".jpg")), cla)
                     count = count+1
                     print 'Save Image'
         
