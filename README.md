@@ -20,3 +20,6 @@ A third party lib. facerec/py/apps/videofacerec opens a stream and detects faces
 
 Training a model:
 `python simple_videofacerec.py -t /home/philipp/facerec/data/celebrities my_model.pkl`
+
+This project is included as a submodule, please see the following link for instructions on cloning: http://git-scm.com/book/nl/v1/Git-tools-Submodules#Een-project-met-submodules-clonen
+
