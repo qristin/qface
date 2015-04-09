@@ -3,7 +3,7 @@ import sys
 from time import time
 import os
 
-PATH = "/home/kristin/AwesomeThings/QFace/img/captured"
+PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'img/captured')
 
 face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 eye_cascade = cv2.CascadeClassifier('haarcascade_eye.xml')
