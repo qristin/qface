@@ -3,6 +3,8 @@ import sys
 from time import time
 import os
 
+PATH = "/home/kristin/AwesomeThings/QFace/img/captured"
+
 face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 eye_cascade = cv2.CascadeClassifier('haarcascade_eye.xml')
 
@@ -16,7 +18,7 @@ now = time()
 storedTime = 0
 f = []
 
-for filename in os.listdir("/home/kristin/AwesomeThings/QFace/img/captured"):
+for filename in os.listdir(PATH):
     name, ext = os.path.splitext(filename)
     try:
         intVal = int(name)
@@ -67,7 +69,7 @@ while True:
                     storedTime = now
                     cv2.imshow('img',face)
                     face = cv2.resize(face, face_sz, interpolation = cv2.INTER_CUBIC)
-                    cv2.imwrite(os.path.join("/home/kristin/AwesomeThings/QFace/img/captured", "%s%s%d%s" % ("","",count,".jpg")), face)
+                    cv2.imwrite(os.path.join(PATH, "%s%s%d%s" % ("","",count,".jpg")), face)
                     count = count+1
                     print 'Save Image'
         
