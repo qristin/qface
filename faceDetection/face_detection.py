@@ -37,6 +37,8 @@ while True:
 
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
+    
+
     faces = face_cascade.detectMultiScale(
         gray,
         scaleFactor=1.1,
@@ -67,7 +69,8 @@ while True:
                 now = time()
                 if (now-storedTime) > coolDown:
                     storedTime = now
-                    cv2.imshow('img',face)
+                    equIm = cv2.equalizeHist(roi_gray)
+                    cv2.imshow('img',equIm)
                     face = cv2.resize(face, face_sz, interpolation = cv2.INTER_CUBIC)
                     cv2.imwrite(os.path.join(PATH, "%s%s%d%s" % ("","",count,".jpg")), face)
                     count = count+1
