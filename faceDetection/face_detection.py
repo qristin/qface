@@ -13,7 +13,7 @@ clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
 
 video_capture = cv2.VideoCapture(0)
 
-coolDown = 10
+coolDown = 5
 
 face_sz = (130,130)
 

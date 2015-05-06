@@ -18,6 +18,8 @@ import logging
 import cv2
 from helper.common import *
 from helper.video import *
+from helper.utils import *
+from helper.gui import *
 # add facerec to system path
 import sys
 sys.path.append("../..")
@@ -50,7 +52,7 @@ def get_model(image_size, subject_names):
     # Define the Fisherfaces Method as Feature Extraction method:
     feature = Fisherfaces()
     # Define a 1-NN classifier with Euclidean Distance:
-    classifier = NearestNeighbor(dist_metric=EuclideanDistance(), k=2)
+    classifier = NearestNeighbor(dist_metric=EuclideanDistance(), k=5)
     # Return the model as the combination:
     return ExtendedPredictableModel(feature=feature, classifier=classifier, image_size=image_size, subject_names=subject_names)
 
@@ -109,39 +111,60 @@ def read_images(path, image_size=None):
     return [X,y,folder_names]
 
 
+
+
 class App(object):
     def __init__(self, model, camera_id, cascade_filename):
         self.model = model
         self.detector = CascadedDetector(cascade_fn=cascade_filename, minNeighbors=5, scaleFactor=1.1)
         self.cam = create_capture(camera_id)
+        startGui(self.cam, self.getFrame)
+
+    def getFrame(self):
+        ret, frame = self.cam.read()
+        # Resize the frame to half the original size for speeding up the detection process:
+        img = cv2.resize(frame, (frame.shape[1]/2, frame.shape[0]/2), interpolation = cv2.INTER_CUBIC)
+        imgout = img.copy()
+        predictions = []
+        for i,r in enumerate(self.detector.detect(img)):
+            x0,y0,x1,y1 = r
+            # (1) Get face, (2) Convert to grayscale & (3) resize to image_size:
+            face = img[y0:y1, x0:x1]
+            face = cv2.cvtColor(face,cv2.COLOR_BGR2GRAY)
+            face = cv2.resize(face, self.model.image_size, interpolation = cv2.INTER_CUBIC)
+            face = cv2.equalizeHist(face)
+            # Get a prediction from the model:
+            prediction = self.model.predict(face)
+            prediction_id = weighted_nearest_neighbours(prediction)
+            #print ("La",prediction)
+            #print("Location ", x0, y0 )
+            # Draw the face area in image:
+            cv2.rectangle(imgout, (x0,y0),(x1,y1),(0,255,0),2)
+            # Draw the predicted name (folder name...):
+            draw_str(imgout, (x0-20,y0-20), self.model.subject_names[prediction_id])
+
+            # TODO:
+            # draw stats to see matching
+            draw_stats(imgout, (200,230), prediction, self.model)
+            predictions.append(prediction)
+        predictions.append(self.model.subject_names)
+        return imgout, predictions
+
             
-    def run(self):
-        while True:
-            ret, frame = self.cam.read()
-            # Resize the frame to half the original size for speeding up the detection process:
-            img = cv2.resize(frame, (frame.shape[1]/2, frame.shape[0]/2), interpolation = cv2.INTER_CUBIC)
-            imgout = img.copy()
-            for i,r in enumerate(self.detector.detect(img)):
-                x0,y0,x1,y1 = r
-                # (1) Get face, (2) Convert to grayscale & (3) resize to image_size:
-                face = img[y0:y1, x0:x1]
-                face = cv2.cvtColor(face,cv2.COLOR_BGR2GRAY)
-                face = cv2.resize(face, self.model.image_size, interpolation = cv2.INTER_CUBIC)
-                face = cv2.equalizeHist(face)
-                # Get a prediction from the model:
-                prediction = self.model.predict(face)
-                print ("La",prediction)
-                # Draw the face area in image:
-                cv2.rectangle(imgout, (x0,y0),(x1,y1),(0,255,0),2)
-                # Draw the predicted name (folder name...):
-                draw_str(imgout, (x0-20,y0-20), self.model.subject_names[prediction[0]])
-            cv2.imshow('videofacerec', imgout)
-            # Show image & exit on escape or q:
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
-            ch = cv2.waitKey(1)
-            if ch == 27:
-                break
+    # def run(self):
+
+
+
+
+    #     while True:
+            
+    #         cv2.imshow('videofacerec', imgout)
+    #         # Show image & exit on escape or q:
+    #         if cv2.waitKey(1) & 0xFF == ord('q'):
+    #             break
+    #         ch = cv2.waitKey(1)
+    #         if ch == 27:
+    #             break
 
 if __name__ == '__main__':
     from optparse import OptionParser

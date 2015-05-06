@@ -10,12 +10,20 @@ Required:
 # faceDetection
 
 With the faceDetection you can create your own dataset. Specify the path where do you want to store the images.
-Run the app with `python face_detection.py` 
+Run the app with `python face_detection.py` on the path ./faceDetection/
 
 # facerec
 
-Download:
-A third party lib. faceRecognition/apps/videofacerec opens a stream and detects faces that are trained in the *.pkl file.
+faceRecognition/apps/videofacerec opens a stream and detects faces that are trained in the *.pkl file.
 
 Training a model:
-`python simple_videofacerec.py -t /home/philipp/facerec/data/celebrities my_model.pkl`
+On the path ./faceRecognition/apps/videofacerec/ run:
+`python simple_videofacerec.py -t <path to your training images> my_model.pkl`
+
+Run video with a trained pickle file:
+`python simple_videofacerec.py my_model.pkl`
+
+# TODO
+
+* weighted k nearest neighbour implementeren
+*

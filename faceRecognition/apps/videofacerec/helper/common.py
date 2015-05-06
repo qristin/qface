@@ -56,7 +56,7 @@ def lookat(eye, target, up = (0, 0, 1)):
     down = np.cross(fwd, right)
     R = np.float64([right, down, fwd])
     tvec = -np.dot(R, eye)
-    return R, tvec
+    return RectSelector, tvec
 
 def mtx2rvec(R):
     w, u, vt = cv2.SVDecomp(R - np.eye(3))
@@ -69,6 +69,10 @@ def mtx2rvec(R):
 def draw_str(dst, (x, y), s):
     cv2.putText(dst, s, (x+1, y+1), cv2.FONT_HERSHEY_PLAIN, 1.0, (0, 0, 0), thickness = 2, lineType=cv2.CV_AA)
     cv2.putText(dst, s, (x, y), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 255, 255), lineType=cv2.CV_AA)
+
+def draw_stats(dst, (x,y), parameters, model):
+    #print("Params", parameters[1])
+    cv2.putText(dst, 'test', (x,y), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 0, 255), lineType=cv2.CV_AA)
 
 class Sketcher:
     def __init__(self, windowname, dests, colors_func):
