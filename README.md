@@ -23,7 +23,13 @@ On the path ./faceRecognition/apps/videofacerec/ run:
 Run video with a trained pickle file:
 `python simple_videofacerec.py my_model.pkl`
 
+# extract faces
+To make use of images from the internet we must extract faces
+
 # TODO
 
+* threshold  implementeren en visualiseren
+
+# DONE
+
 * weighted k nearest neighbour implementeren
-*

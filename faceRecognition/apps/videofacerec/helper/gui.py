@@ -4,20 +4,27 @@ import numpy as np
 from PyQt4 import QtGui, QtCore, Qt
 from ui import Ui_MainWindow
 from utils import *
+import random
 
 
 class Video():
     def __init__(self,capture, getFrame):
         self.capture = capture
-        self.currentFrame=np.array([])
+        self.currentFrame = np.array([])
         self.getFrame = getFrame
         self.labels = []
+        self.histogram = {}
+        self.name = ''
+        self.l = [random.randint(0, 10) for i in range(4)]
 
     def captureNextFrame(self):
         frame, predictions = self.getFrame()
         if(len(predictions)>1):
             self.labels = get_text(predictions[0], predictions[-1])
+            self.histogram = getHistValues(predictions[0],predictions[-1])
+            self.name = get_Name(predictions[0], predictions[-1])
         self.currentFrame = cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
+       
         # capture frame and reverse RBG BGR and return opencv image
         # ret, readFrame=self.capture.read()
         # if(ret==True):
@@ -53,14 +60,19 @@ class Gui(QtGui.QMainWindow):
             self.video.captureNextFrame()
             self.ui.videoFrame.setPixmap(self.video.convertFrame())
             self.ui.videoFrame.setScaledContents(True)
+            gethistogram(self.ui.axes,tuple(self.video.histogram.values()),tuple(self.video.histogram.keys()))
+            # l = [random.randint(0, 10) for i in range(4)]
+            # self.ui.axes.plot(self.video.histogram.values(), 'r')
+            self.ui.canvas.draw()
+
             if(len(self.video.labels)!=0):
-                self.ui.label1.setText(self.video.labels[0])
-                self.ui.label2.setText(self.video.labels[1])
-                self.ui.label3.setText(self.video.labels[2])
-                self.ui.label4.setText(self.video.labels[3])
-                self.ui.label5.setText(self.video.labels[4])
+                self.ui.label1.setText(self.video.name)
+                # self.ui.label2.setText(self.video.labels[1])
+                # self.ui.label3.setText(self.video.labels[2])
+                # self.ui.label4.setText(self.video.labels[3])
+                # self.ui.label5.setText(self.video.labels[4])
         except TypeError as e:
-            print("No FRame", e)
+            print("No Frame", e)
 
 def startGui(capture, getFrame):
     app = QtGui.QApplication(sys.argv)

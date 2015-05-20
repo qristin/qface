@@ -8,6 +8,8 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt4 import QtCore, QtGui
+from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
+import matplotlib.pyplot as matplot
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -17,12 +19,18 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
 
+
+        # self._fig = figure(facecolor="white")
+        # self._ax = self._fig.add_subplot(111)
+
+
         screen = QtGui.QDesktopWidget().screenGeometry() 
 
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
         MainWindow.resize(screen.width(), screen.height())
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
+        MainWindow.setCentralWidget(self.centralwidget)
 
         # self.frame = QtGui.QFrame(self.centralwidget)
         # self.frame.setGeometry(QtCore.QRect(200, 0, 4*320, 4*240))
@@ -39,36 +47,52 @@ class Ui_MainWindow(object):
         self.videoFrame.setGeometry(QtCore.QRect(500, 0, 2*320, 2*240))
         self.videoFrame.setObjectName(_fromUtf8("videoFrame"))
         #self.gridLayout.addWidget(self.videoFrame,0,0)
-        MainWindow.setCentralWidget(self.centralwidget)
+        
+        layout = QtGui.QVBoxLayout(self.centralwidget)
+        layout.setAlignment(QtCore.Qt.AlignTop)
+
+        self.figure = matplot.figure(figsize=(5, 4), dpi=100)
+        matplot.ylim(0,0.5)
+        self.canvas = FigureCanvas(self.figure)
+        self.canvas.setFixedSize(440, 470)
+        self.axes = self.figure.add_subplot(111)
+        self.axes.hold(False)
+        layout.addWidget(self.canvas)
 
         self.label1 = QtGui.QLabel(self.centralwidget)
-        self.label1.setGeometry(QtCore.QRect(1300,100, 200, 10))
-        self.label1.setText('TEST')
+        font = QtGui.QFont()
+        font.setBold(True)
+        font.setWeight(75)
+        font.setPointSize(70)
+        self.label1.setFont(font)
+        self.label1.setGeometry(QtCore.QRect(700,600, 800, 200))
+        self.label1.setText('')
 
-        self.label2 = QtGui.QLabel(self.centralwidget)
-        self.label2.setGeometry(QtCore.QRect(1300,200, 200, 10))
-        self.label2.setText('TEST')
+        # self.histogram = QtGui.QLabel(self.can)
+        # self.histogram.setGeometry(QtCore.QRect(500, 400, 2*320, 2*240))
+        # self.histogram.setObjectName(_fromUtf8("histogram"))
 
-        self.label3 = QtGui.QLabel(self.centralwidget)
-        self.label3.setGeometry(QtCore.QRect(1300,300, 200, 10))
-        self.label3.setText('TEST')
+        # self.label1 = QtGui.QLabel(self.centralwidget)
+        # self.label1.setGeometry(QtCore.QRect(1300,100, 200, 10))
+        # self.label1.setText('TEST')
 
-        self.label4 = QtGui.QLabel(self.centralwidget)
-        self.label4.setGeometry(QtCore.QRect(1300,400, 200, 10))
-        self.label4.setText('TEST')
+        # self.label2 = QtGui.QLabel(self.centralwidget)
+        # self.label2.setGeometry(QtCore.QRect(1300,200, 200, 10))
+        # self.label2.setText('TEST')
 
-        self.label5 = QtGui.QLabel(self.centralwidget)
-        self.label5.setGeometry(QtCore.QRect(1300,500, 200, 10))
-        self.label5.setText('TEST')
+        # self.label3 = QtGui.QLabel(self.centralwidget)
+        # self.label3.setGeometry(QtCore.QRect(1300,300, 200, 10))
+        # self.label3.setText('TEST')
 
-        self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 823, 21))
-        self.menubar.setObjectName(_fromUtf8("menubar"))
-        MainWindow.setMenuBar(self.menubar)
+        # self.label4 = QtGui.QLabel(self.centralwidget)
+        # self.label4.setGeometry(QtCore.QRect(1300,400, 200, 10))
+        # self.label4.setText('TEST')
+
+        # self.label5 = QtGui.QLabel(self.centralwidget)
+        # self.label5.setGeometry(QtCore.QRect(1300,500, 200, 10))
+        # self.label5.setText('TEST')
+
         
-        self.statusbar = QtGui.QStatusBar(MainWindow)
-        self.statusbar.setObjectName(_fromUtf8("statusbar"))
-        MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)

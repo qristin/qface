@@ -6,37 +6,24 @@ import matplotlib.pyplot as plt
 
 
 
-def gethistogram(v, n):
-    n_groups = 5
+def gethistogram(ax, v, n):
+    N = len(v)
+    menMeans = v
 
-
-    means_men = v
-
+    ind = np.arange(N)  # the x locations for the groups
+    width = 0.35       # the width of the bars
 
     fig, ax = plt.subplots()
+    rects1 = ax.bar(ind, menMeans, width, color='r')
 
-    index = np.arange(n_groups)
-    bar_width = 0.5
 
-    opacity = 0.5
-    error_config = {'ecolor': '0.3'}
+    # add some text for labels, title and axes ticks
+    ax.set_ylabel('Scores')
+    ax.set_title('Scores by group and gender')
+    ax.set_xticks(ind+width)
+    ax.set_xticklabels( ('G1', 'G2', 'G3', 'G4', 'G5') )
 
-    rects1 = plt.bar(index, means_men, bar_width,
-                     alpha=opacity,
-                     color='c',
-                     error_kw=error_config,
-                     label='Qers')
-
-    plt.xlabel('Group')
-    plt.ylabel('Scores')
-    plt.title('Scores by person')
-    plt.xticks(index + bar_width, n)
-    plt.legend()
-
-    plt.tight_layout()
     plt.show()
-
-    return plt.figure()
 
 values = (16, 35, 12, 71, 27)
 names = ('Name A', 'Name B', 'Name C', 'Name D', 'Name E')

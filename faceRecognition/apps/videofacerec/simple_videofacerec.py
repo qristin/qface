@@ -135,17 +135,20 @@ class App(object):
             face = cv2.equalizeHist(face)
             # Get a prediction from the model:
             prediction = self.model.predict(face)
-            prediction_id = weighted_nearest_neighbours(prediction)
+            prediction_id = getWeightedPrediction(prediction, self.model.subject_names)
             #print ("La",prediction)
             #print("Location ", x0, y0 )
             # Draw the face area in image:
             cv2.rectangle(imgout, (x0,y0),(x1,y1),(0,255,0),2)
             # Draw the predicted name (folder name...):
-            draw_str(imgout, (x0-20,y0-20), self.model.subject_names[prediction_id])
+            if(prediction_id == 0):
+                draw_str(imgout, (x0-20,y0-20), "unknown")
+            else:
+                draw_str(imgout, (x0-20,y0-20), self.model.subject_names[prediction_id])
 
-            # TODO:
-            # draw stats to see matching
-            draw_stats(imgout, (200,230), prediction, self.model)
+            # # TODO:
+            # # draw stats to see matching
+            # draw_stats(imgout, (200,230), prediction, self.model)
             predictions.append(prediction)
         predictions.append(self.model.subject_names)
         return imgout, predictions
